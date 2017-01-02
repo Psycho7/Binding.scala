@@ -224,7 +224,7 @@ def table: Binding[BindingSeq[Node]] = {
 当你点击 "Modify the name" 按钮时，对应联系人的 `name` 将会发生改变，
 这是因为 Binding.scala 将对应的 `tr` 中 `name` 的值改变了。
 
-完整的例子请参考 https://github.com/ThoughtWorksInc/Binding.scala-sample。
+完整的例子请参考 https://github.com/ThoughtWorksInc/Binding.scala-sample 。
 
 
 ## 设计
@@ -487,7 +487,7 @@ addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.fu
 
 ## 其他链接
 
-* [The API documentation](https://oss.sonatype.org/service/local/repositories/releases/archive/com/thoughtworks/binding/unidoc_2.11/9.0.1/unidoc_2.11-9.0.1-javadoc.jar/!/com/thoughtworks/binding/package.html)
+* [The API documentation](https://oss.sonatype.org/service/local/repositories/releases/archive/com/thoughtworks/binding/unidoc_2.11/9.0.2/unidoc_2.11-9.0.2-javadoc.jar/!/com/thoughtworks/binding/package.html)
 * [Binding.scala • TodoMVC](http://todomvc.com/examples/binding-scala/)
 * [Other live DEMOs](https://thoughtworksinc.github.io/Binding.scala/)
 * [Frequently Asked Questions](https://github.com/ThoughtWorksInc/Binding.scala/wiki/FAQ)

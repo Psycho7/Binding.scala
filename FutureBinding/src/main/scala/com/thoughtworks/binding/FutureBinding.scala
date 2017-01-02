@@ -39,7 +39,7 @@ object FutureBinding {
   * A wrapper that wraps [[scala.concurrent.Future]] to a [[Binding]].
   *
   * @note Because all [[Binding]] (including this [[FutureBinding]]) are not thread safe,
-  *       you must guarantee `executor` running sequencely.
+  *       you must guarantee `executor` running sequentially.
   */
 final class FutureBinding[A](future: Future[A])(implicit executor: ExecutionContext) extends Binding[Option[Try[A]]] {
 
@@ -51,17 +51,18 @@ final class FutureBinding[A](future: Future[A])(implicit executor: ExecutionCont
     publisher.unsubscribe(listener)
   }
 
-  private var isHandlerRegiested: Boolean = false
+  private var isHandlerRegistered: Boolean = false
 
   private def completeHandler(result: Try[A]): Unit = {
+    val event = new ChangedEvent[Option[Try[A]]](this, Some(result))
     for (listener <- publisher) {
-      listener.changed(new ChangedEvent[Option[Try[A]]](this, None, Some(result)))
+      listener.changed(event)
     }
   }
 
   override private[binding] def addChangedListener(listener: ChangedListener[Option[Try[A]]]): Unit = {
-    if (!isHandlerRegiested) {
-      isHandlerRegiested = true
+    if (!isHandlerRegistered) {
+      isHandlerRegistered = true
       if (!future.isCompleted) {
         future.onComplete(completeHandler)
       }

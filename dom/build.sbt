@@ -6,26 +6,33 @@ name := "dom"
 
 description := "Reactive web framework for Scala.js."
 
-libraryDependencies += "com.lihaoyi" %%% "scalatags" % "0.6.0"
+libraryDependencies += "com.thoughtworks.extractor" %% "extractor" % "1.1.1"
 
-libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "0.9.0"
+libraryDependencies += "com.lihaoyi" %%% "scalatags" % "0.6.2"
 
-libraryDependencies += "org.apache.commons" % "commons-lang3" % "3.4"
+libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "0.9.1"
 
-jsDependencies += RuntimeDOM
-
-libraryDependencies += "com.lihaoyi" %%% "utest" % "0.3.1" % Test
-
-testFrameworks += new TestFramework("utest.runner.Framework")
-
-resolvers in ThisBuild += Resolver.sonatypeRepo("releases")
+libraryDependencies += "org.scalatest" %%% "scalatest" % "3.0.0" % Test
 
 libraryDependencies += "org.typelevel" %% "macro-compat" % "1.1.1"
 
 libraryDependencies += "org.scala-lang" % "scala-compiler" % scalaVersion.value % Provided
 
+libraryDependencies ++= {
+  CrossVersion.partialVersion(scalaVersion.value) match {
+    case Some((2, scalaMajor)) if scalaMajor >= 11 =>
+      Seq("org.scala-lang.modules" %% "scala-xml" % "1.0.6")
+    case _ =>
+      Nil
+  }
+}
+
 addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
 
-releasePublishArtifactsAction <<= PgpKeys.publishSigned
-
 scalacOptions += "-Xexperimental"
+
+jsDependencies in Test += RuntimeDOM
+
+inConfig(Test) {
+  jsEnv in ThisBuild := RhinoJSEnv().value
+}

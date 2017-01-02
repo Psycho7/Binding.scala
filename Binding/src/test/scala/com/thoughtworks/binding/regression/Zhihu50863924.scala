@@ -22,15 +22,44 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package scala.xml
+package com.thoughtworks.binding.regression
+
+import com.thoughtworks.binding.Binding
+import com.thoughtworks.binding.Binding.Var
+import org.scalatest.{FreeSpec, Matchers}
 
 /**
-  * This file is created in order to avoid the error message:
-  *
-  * ```
-  * To compile XML syntax, the scala.xml package must be on the classpath.
-  * ```
-  *
   * @author 杨博 (Yang Bo) &lt;pop.atry@gmail.com&gt;
   */
-private class SuppressErrorToCompileXMLSyntax
+final class Zhihu50863924 extends FreeSpec with Matchers {
+
+  "Newly created Binding expression should not re-render immediately" in {
+
+    var renderCount0 = 0
+    var renderCount1 = 0
+
+    def subComponent(value: Var[Option[String]]) = Binding {
+      renderCount0 += 1
+      assert(value.bind == Some("Changed"))
+      renderCount1 += 1
+      Right(value.bind.get)
+    }
+
+    val value: Var[Option[String]] = Var(None)
+
+    val render = Binding {
+      if (value.bind.isDefined) {
+        subComponent(value).bind
+      } else {
+        Left("None here!")
+      }
+    }
+
+    render.watch()
+    assert(render.get == Left("None here!"))
+    value := Some("Changed")
+    assert(render.get == Right("Changed"))
+    assert(renderCount0 == 1)
+    assert(renderCount1 == 1)
+  }
+}
